@@ -151,19 +151,19 @@ router.get('/videogame/:id', async (req, res) => {
 });
 //--------------------------------------get genres--------------------------------------------------------------
 router.get('/genres', async (req, res) => {
+    //traer los generos de la api y guardarlos en la db
     try{
-        const genresApi = await axios.get(`https://api.rawg.io/api/genres?key=${API_KEY}`)
-       const apiGenre = genresApi.data?.result.map(element => element.name)
-       const repeatedGenre = apiGenre.flat();
-       const finalListOfGenre = [...new setImmediate(repeatedGenre)]
-
-       const genres = finalListOfGenre.map(name => ({name}));
-       await Genre.bulkCreate(genres)
-    }catch(err){
-        console.log(err)
+        const genresAPI = await axios.get(`https://api.rawg.io/api/genres?key=${API_KEY}`)
+        genresAPI.data.results.forEach(p => {
+            Genre.findOrCreate({
+                where: { name: p.name }
+            })
+        })
+        const genresDB = await Genre.findAll()
+        res.json(genresDB)
+    } catch (err) {
+        res.status(404).json({ err })
     }
-    const allGenres = await Genre.findAll();
-    res.send (allGenres);
 })
 
 module.exports = router;
