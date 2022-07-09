@@ -58,10 +58,13 @@ router.get('/videogames', async (req, res) => {
     } else {
         // SI NO ENTRO POT QUERIES --> voy a buscar todos los juegos a la API
         try {
-         
+            let pages = 0;
             let results = [...videogamesDb]; //sumo lo que tengo en la DB
             let response = await axios.get(`https://api.rawg.io/api/games?key=${API_KEY}`);
           
+            while(pages < 6){
+                pages++;
+            
                
                 //filtro solo la DATA que necesito enviar al FRONT
                 const gammesREADY = response.data.results.map(game => {
@@ -75,7 +78,7 @@ router.get('/videogames', async (req, res) => {
 				});
                 results = [...results, ...gammesREADY]
                 response = await axios.get(response.data.next) //vuelvo a llamar a la API con next
-            
+            }
             return res.json(results)
         } catch (err) {
             console.log(err)
@@ -83,56 +86,7 @@ router.get('/videogames', async (req, res) => {
         }
     }
 });
-// router.get('/videogames', async (req, res) => {
-//     const {name} = req.query;
-//     let videogamesDb = await Videogame.findAll({
-//         include: Genre
-//     });
-//     //Parseo el objeto
-//     videogamesDb = JSON.stringify(videogamesDb);
-//     videogamesDb = JSON.parse(videogamesDb);
- 
 
-//     if(name){
-//         try{
-//             let response = await axios.get(`https://api.rawg.io/api/games?search=${name}&key=${API_KEY}`);
-//             if (!response.data.count) return res.status(404).json(`Este juego ${name} no fue encontrado`);
-//             const gameFind = response.data.results.map(game => {
-//                 return {
-//                     id: game.id,
-//                     name: game.name,
-//                     image: game.background_image,
-//                     genres: game.genres.map(e => e.name).join(', ')
-//                 }
-//             });
-//             const filteredGamesDb = videogamesDb.filter(g => g.name.toLowerCase().includes(name.toLowerCase()));
-//             const results = [...filteredGamesDb, ...gameFind.splice(0, 15)];
-//             return res.json(results);
-//         }catch(err){
-//             console.log(err)
-//         }
-//     }else{
-//         try{
-//             let result = [...videogamesDb]//Lo que esta en la base de datos
-//             let response = axios.get(`https://api.rawg.io/api/games?key=${API_KEY}`)
-//             const allGames = response.data.results.map(game => {
-//             return {
-//                 id: game.id,
-//                 name: game.name,
-//                 image: game.background_image,
-//                 genre: game.genres.map(e => e.name)
-
-//             }
-//         });
-//         result = [...result,...allGames];
-//         response = await axios.get(response.data.next)
-//         return res.json(result)
-//         }catch(err){
-//             console.log(err)
-//             return res.status(500)
-//         }    
-//     }
-// })
 
 //----------------------------------------videogame/id--------------------------------------------------------------
 //Search a videogame by id
