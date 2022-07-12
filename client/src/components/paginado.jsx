@@ -12,7 +12,7 @@ export default function Paginado ({PostPage, paginado, allVideogames }){
             <ul>
                 {pageNumbers && 
                 pageNumbers.map(number => (
-                    <li>
+                    <li key={number} >
                     <a onClick={() => paginado(number)}>{number}</a>
                     </li>
                 ))}

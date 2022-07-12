@@ -1,9 +1,10 @@
-import { FILTER_BY_GENRE, GET_VIDEOGAMES, ORDER_BY_NAME, RATING_SORT, FILTER_CREATED, GET_GENRES } from "../actions";
+import { FILTER_BY_GENRE, GET_VIDEOGAMES, ORDER_BY_NAME, RATING_SORT, FILTER_CREATED, GET_GENRES, GET_DETAIL, GET_NAME_VIDEOGAME, POST_VIDEOGAME} from "../actions";
 const initialState = {
     videogames : [],
     genres: [],
     copyVideogames: [],
-    detail: []
+    detail: [],
+    platforms: []
 }
 
 function rootReducer(state= initialState, action){
@@ -13,8 +14,9 @@ function rootReducer(state= initialState, action){
                 ...state,
                 videogames: action.payload,
                 copyVideogames: action.payload,
-                detail: []
+                detail: [],
             }
+            
         case GET_GENRES:
             return{
                 ...state,
@@ -84,7 +86,6 @@ function rootReducer(state= initialState, action){
                     videogames: sortedRating
                 }
             case FILTER_CREATED:
-                    // const allRecipes2 = state.copyRecipes
         
                     const createdFilter = action.payload === 'Created'?
                     state.copyVideogames.filter(el => el.createdInDb):
@@ -93,7 +94,22 @@ function rootReducer(state= initialState, action){
                         ...state,
                         videogames: action.payload === 'All' ? state.copyVideogames: createdFilter
                     }
-            default: 
+            case GET_DETAIL:
+                    return{
+                         ...state,
+                         detail: action.payload
+                    }
+           
+            case GET_NAME_VIDEOGAME:
+                return {
+                    ...state,
+                    videogames: action.payload
+                }
+            case POST_VIDEOGAME:
+                return {
+                    ...state
+                }
+            default:
                 return state;
     }
 

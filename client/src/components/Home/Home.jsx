@@ -4,7 +4,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import { getVideogames, filterVideogamesByGenre, orderByName, ratingSort, filterCreated, getGenres } from '../../actions';
 import {Link} from 'react-router-dom';
 import Card from '../Card/Card';
-import Paginado from '../paginado';
+import Paginado from '../Paginado';
+import SearchBar from '../SearchBar/SearchBar';
 
 export default function Home(){
 const dispatch = useDispatch();
@@ -77,7 +78,7 @@ return (
               <option value='all'>Seleccionar el genero</option>
               {allGenres?.map(genre => {
                 return(
-                    <option value = {genre.name}>{genre.name}</option>
+                    <option value = {genre.name} key = {genre.name}>{genre.name}</option>
                 )
               })}
             </select>
@@ -96,10 +97,12 @@ return (
     allVideogames = {allVideogames.length}
     paginado = {paginado}
     />
+
+    <SearchBar/>
             {
-                 currentVideogames?.map ((el) => {
+                 currentVideogames?.map (el => {
                     return (
-                        <div>
+                        <div key = {el.name}>
                             <Link to = {`/videogame/${el.id}`}>
                                 <Card 
                                  key={el.id}
