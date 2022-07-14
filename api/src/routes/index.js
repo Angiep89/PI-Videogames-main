@@ -3,6 +3,7 @@ const axios = require ('axios');
 const {Genre, Videogame} = require('../db')
 require('dotenv').config();
 
+
 const {API_KEY} = process.env;
 // Importar todos los routers;
 // Ejemplo: const authRouter = require('./auth.js');
@@ -13,164 +14,197 @@ const router = Router();
 // Configurar los routers
 // Ejemplo: router.use('/auth', authRouter);
 // //No se sabe cuanto se demora la respuesta, por eso se le avisa que tiene que esperar 
-// //-----------------------------------/videogames and videogames?name=-------------------------------------------------
-router.get('/videogames', async (req, res) => {
-    const {name} = req.query;
-    //busco en la DB si tengo juegos creados y me traigo todos
-    let videogamesDb = await Videogame.findAll({
-        include: Genre
-    });
-    //Parseo el objeto
-    videogamesDb = JSON.stringify(videogamesDb);
-    videogamesDb = JSON.parse(videogamesDb);
-    //Aca dejo el arreglo de generos plano con solo los nombres de cada genero(llega array de objetos)
-    videogamesDb = videogamesDb.reduce((acc, el) => acc.concat({
-        ...el,
-        genres: el.genres.map(g => g.name)
-    }), [])
+const datos = async ()=>{
+    const arreglo1 = await axios.get(`https://api.rawg.io/api/games?key=${API_KEY}`)
+    const arreglo2 = await axios.get(arreglo1.data.next)
+    const arreglo3 = await axios.get(arreglo2.data.next)
+    const arreglo4 = await axios.get(arreglo3.data.next)
+    const arreglo5 = await axios.get(arreglo4.data.next)
     
-    //TODO QUERIES --------> GET /videogames?name="..." <-----------
-    // si llegan queries "name" lo agarro por aca
-    if (name) {
-        try {
-            //busco si existe el juego en la API
-            let response = await axios.get(`https://api.rawg.io/api/games?search=${name}&key=${API_KEY}`);
-            if (!response.data.count) return res.status(204).json(`Juego no encontrado "${name}"`);
-            //filtro SOLO la data que necesito para enviarle al front
-            const gamesREADY = response.data.results.map(game => {
-                return{
-                    id: game.id,
-                    name: game.name,
-                    background_image: game.background_image,
-                    rating: game.rating,
-                    genres: game.genres.map(g => g.name)
-                }
-            });
+    const arr1= arreglo1.data.results.concat(arreglo2.data.results)
+    const arr2= arr1.concat(arreglo3.data.results)
+    const arr3= arr2.concat(arreglo4.data.results)
+    const arr4= arr3.concat(arreglo5.data.results)
 
-            //como antes me traje TODOS de la base de datos, si entro por queries, solo filtro los que coincidan con la busqueda
-            const filteredGamesDb = videogamesDb.filter(g => g.name.toLowerCase().includes(name.toLowerCase()));
-            //doy prioridad a la DB, y sumo todos, y corto el array en 15
-            const results = [...filteredGamesDb, ...gamesREADY.splice(0, 15)];
-            return res.json(results)
-        } catch (err) {
-            return console.log(err)
+    
+    const infoSimpleApi = arr4.map(function(datos) {const info={
+        id: datos.id,
+        name: datos.name,
+        genres: datos.genres.map(genero=> genero.name),
+        background_image: datos.background_image,
+        rating: datos.rating,
+        platforms: datos.platforms?.map((el) => el.platform.name)
+    } 
+        return info
+    })
+    let juegosDB = await Videogame.findAll({
+        include: {
+          model: Genre,
+        },
+      })
+      console.log('juegooos', juegosDB)
+    let juegosDBSimple= juegosDB.map(function(datos) {const info={
+        id: datos.id,
+        name: datos.name,
+        genres: datos.genres,
+        background_image: datos.background_image,
+        rating: datos.rating,
+        platforms:datos.platforms,
+        createdinDb: datos.createdinDb
+        // genrestr.toString()
+    } 
+    return info
+    })
+    let allGames = [...juegosDBSimple, ...infoSimpleApi]
+   
+    return allGames;
+}          
+
+const juegos = async (name)=>{
+    let busquedaApi = await axios.get(`https://api.rawg.io/api/games?search=${name}?&key=${API_KEY}`)
+    const infoSimpleApi = busquedaApi.data.results?.map(function(datos) {const info={
+        id: datos.id,
+        name: datos.name,
+        genres: datos.genres.map(genero=> genero.name),
+        background_image: datos.background_image,
+        rating:datos.rating
+        }    
+        return info
+        })
+    let juegosDB = await Videogame.findAll({
+        include: {
+          model: Genre,
+        },
+      })
+    let juegosDBSimple= juegosDB.map(function(datos) {const info={
+        id: datos.id,
+        name: datos.name,
+        genres: datos.genres,
+        background_image: datos.background_image,
+        rating: datos.rating,
+        platforms:datos.platforms,
+        createdinDb: datos.createdinDb
+    } 
+    return info
+    })
+    let allGames = [...juegosDBSimple, ...infoSimpleApi]
+
+    return allGames;
+
+}
+
+const detail = async (id)=>{
+    if(id.length<7){
+        const detalle = await axios.get(`https://api.rawg.io/api/games/${id}?&key=${API_KEY}`)
+        const infoSimpleApi = {
+                id: detalle.data.id,
+                name: detalle.data.name,
+                description: detalle.data.description_raw,
+                rating: detalle.data.rating,
+                genres: detalle.data.genres,
+                platforms: detalle.data.platforms.map((p) => p.platform.name).join(", "),
+                background_image: detalle.data.background_image,
+                released: detalle.data.released
+                } 
+        return infoSimpleApi
+    }
+    const juego = await Videogame.findOne({
+        where:{
+            id:id
+        },
+        include:
+        {
+            model:Genre,
+            attributes:["name"]
         }
-    } else {
-        // SI NO ENTRO POT QUERIES --> voy a buscar todos los juegos a la API
-        try {
-            let pages = 0;
-            let results = [...videogamesDb]; //sumo lo que tengo en la DB
-            let response = await axios.get(`https://api.rawg.io/api/games?key=${API_KEY}`);
-          
-            while(pages < 6){
-                pages++;
-            
-               
-                //filtro solo la DATA que necesito enviar al FRONT
-                const gammesREADY = response.data.results.map(game => {
-					return{
-						id: game.id,
-						name: game.name,
-						background_image: game.background_image,
-						rating: game.rating,
-                        genres: game.genres.map(g => g.name)
-					}
-				});
-                results = [...results, ...gammesREADY]
-                response = await axios.get(response.data.next) //vuelvo a llamar a la API con next
-            }
-            return res.json(results)
-        } catch (err) {
-            console.log(err)
-            return res.sendStatus(500)
+    })
+    return juego
+}
+
+// const generos = async()=>{
+//     const generos = await axios.get(`https://api.rawg.io/api/genres?&key=${API_KEY}`)
+//     // let genre =[]
+//     const tomarGeneros = await Genre.findAll()
+//     if(tomarGeneros.length<1){
+//         for (let i = 0; i < generos.data.results.length; i++) {
+//             // genre.push(generos.data.results[i].name);
+//             await Genre.FindOrcreate({
+//                 name: generos.data.results[i].name
+//             })
+//         }
+//         return Genre.findAll()
+//         // return genre
+//     }
+//     return generos.data.results
+// }
+// //-----------------------------------/videogames and videogames?name=-------------------------------------------------
+
+router.get('/videogames', async (req, res) => {
+    try{
+        const {name}= req.query
+        const totalJuegos= await datos()
+        if(name){
+            const busqueda= await juegos(name)
+            const resultado = busqueda.filter(item=>item.name.toLowerCase().includes(name.toLowerCase()))
+            const results = [...resultado.splice(0, 15)];
+            results.length? res.status(200).json(results): res.status(404).json("No existe ese videojuego")
+        }
+        else{
+            res.json(totalJuegos)
         }
     }
-});
-
+    catch(e){
+        console.log(e)
+    }
+})
 
 //----------------------------------------videogame/id--------------------------------------------------------------
-//Search a videogame by id
-router.get('/videogame/:id', async (req, res) => {  
-    const {id} = req.params;
-    try {
-      if (!isNaN(id)){
-    //Search videogame in the Api
-         var idkey = parseInt(id)
-         const result = await axios.get(`https://api.rawg.io/api/games/${idkey}?key=${API_KEY}`)
-         if (result.data.id) {
-           
-            const infoApi = {
-              name: result.data.name,
-              platforms: result.data.platforms.map(e => e.platform.name).join(', '),
-              released: result.data.released, 
-              image: result.data.background_image,
-              description: result.data.description.replace(/<[^>]+>/g, ''),
-              rating: result.data.rating,
-              genres: result.data.genres.map(e => e.name).join(', ')
-            }
-
-            return res.status(200).json(infoApi)
-         }
-      }
-  //Search videogame in local Database  
-      var searchdbvg  = await Videogame.findByPk(id, {
-          include: [{
-             model: Genre,
-             attributes: ['name'],
-             through: {
-               attributes: []
-             }
-          }]
-      });
-       
-      if (searchdbvg) {
-        
-         const objdbgame = {
-            name: searchdbvg.name,
-            platforms: searchdbvg.platform, //platform
-            released: searchdbvg.reldate, //reldate
-            image: "https://media.rawg.io/media/games/157/15742f2f67eacff546738e1ab5c19d20.jpg",
-            description: searchdbvg.description,
-            rating: searchdbvg.rating,
-            genres: searchdbvg.genres.map(e => e.name).toString()
-         }
-         return res.status(200).json(objdbgame)
-      }  
-      return res.status(404).send('Videogame not found');
-    } catch (error) {
-      res.send(`Error in Rute /videogames:id ${error}`);
+router.get('/videogame/:id', async(req, res)=>{
+    try{
+        const {id}= req.params
+        const detalleJuego= await detail(id)
+        res.json(detalleJuego)
     }
-  });
+    catch(e){
+        res.json(e)
+    }
+})
+
 
   //-------------------------------POST VIDEOGAME ---------------------------------------------------------------
-  router.post('/videogames', async (req, res) => {
-    let {
-        name, 
-        description,
-        image,
-        date,
-        rating,
-        platforms,
-        genre,
-        createdInDb
-    } = req.body;
-    platforms = platforms.toString();
-    // console.log(req.body);
+  router.post('/videogames', async(req, res)=>{
+    try{
+        const {name, description, released, rating, platforms, background_image, genres, createdinDb} = req.body
+        let buscarDB = await Videogame.findOne({
+            where:{
+                name:name
+            },})
+        if(buscarDB){
+            throw 'Juego en existencia'
+        }
+        const generoGuardar= await Genre.findAll({where:{
+            name:genres,
+        }})
+        const nuevoVideojuego= await Videogame.create({
+            name, 
+            description,    
+            released,
+            rating,
+            platforms,
+            background_image,
+            createdinDb
+        })
+        nuevoVideojuego.addGenre(generoGuardar)
+        res.json(nuevoVideojuego)
+    } 
+    catch(e){
+        res.json(e)
+    }
+})
 
-    let gameCreated = await Videogame.create({
-        name, 
-        description,
-        image,
-        date,
-        rating,
-        platforms,
-        createdInDb
-    })
 
-    let genressDb = await Genre.findAll({where: {name: genre}})
-    gameCreated.addGenre(genressDb)
-    res.send('Videojuego creado con exito')
-});
+
+
 //--------------------------------------get genres--------------------------------------------------------------
 router.get('/genres', async (req, res) => {
     //traer los generos de la api y guardarlos en la db
@@ -188,4 +222,13 @@ router.get('/genres', async (req, res) => {
     }
 })
 
+// router.get('/genres', async(req, res)=>{
+//     try{
+//         const generoJuego= await generos()
+//         res.json(generoJuego)
+//     }
+//     catch(e){
+//         res.json(e)
+//     }
+// })
 module.exports = router;

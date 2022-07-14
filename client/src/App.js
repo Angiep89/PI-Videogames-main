@@ -9,10 +9,10 @@ function App() {
     <BrowserRouter>
     <div className="App">
       <Switch>
-        <Route exact path = '/' component={LandingPage}/>
-        <Route path = '/home' component={Home}/>
-        <Route path = '/videogames' component ={VideogameCreate} />
-        <Route path= '/videogame/:id' component={Details}/>
+        <Route exact path = '/'  component={LandingPage}/>
+        <Route path = '/home' exact component={Home}/>
+        <Route path = '/videogames' exact component ={VideogameCreate} />
+        <Route  path= '/videogames/:id' exact component={Details}/>
       </Switch>
 
     </div>

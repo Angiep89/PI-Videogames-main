@@ -25,9 +25,6 @@ const paginado = (pageNumber) => {
     setPage(pageNumber)
 }
 
-
-
-
 useEffect(() => {
     dispatch(getVideogames())
 }, [dispatch])
@@ -90,27 +87,26 @@ return (
             <select onChange={(e) => handleFilterCreated(e)}>
                 <option value = 'All'>Todos</option>
                 <option value = 'Created'>Base de datos</option>
-                <option value = 'Api'>API</option>
+                <option value = 'API'>API</option>
             </select>
     <Paginado
-    PostPage = {PostPage}
-    allVideogames = {allVideogames.length}
-    paginado = {paginado}
+         PostPage = {PostPage}
+         allVideogames = {allVideogames.length}
+         paginado = {paginado}
     />
 
     <SearchBar/>
             {
                  currentVideogames?.map (el => {
                     return (
-                        <div key = {el.name}>
-                            <Link to = {`/videogame/${el.id}`}>
+                        <div >
                                 <Card 
                                  key={el.id}
+                                 id = {el.id}
                                  name = {el.name}
                                  genres = {el.genres}
                                  background_image = {el.background_image}
                                 />
-                            </Link>
                         </div>
                     )
                 })

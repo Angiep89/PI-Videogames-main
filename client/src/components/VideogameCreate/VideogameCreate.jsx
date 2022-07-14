@@ -1,18 +1,41 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { postVideogame, getGenres } from "../../actions";
+
+function validate(input){
+    let errors= {};
+    if(!input.name){
+        errors.name = 'Se requiere un nombre';
+    }else if(input.description){
+        errors.description = 'La descripcion debe ser completada'
+    } else if (!input.rating || input.rating<0 || input.rating >5) {
+        errors.rating = 'El rating debe ser un numero entre 0 y 5';
+    }  else if (!input.released) {
+        errors.released = 'Fecha de lanzamiento es requerida';
+    }else if (!input.description) {
+        errors.description = 'Se require de una descripcion';
+    }else if(input.genres.length< 1){
+        errors.genres= 'Se debe seleccionar al menos un genero'
+    }else if(input.platforms.length< 1){
+        errors.platforms= 'Se debe seleccionar al menos una plataforma'
+    }
+    return errors
+}
 
 export default function VideogameCreate(){
     const dispatch = useDispatch();
     const genres = useSelector((state) => state.genres) //traerse los generos
-    const platforms = useSelector((state) => state.platforms)
+    const history = useHistory()
+    const [errors, setErrors] = useState({})
+
     const [input, setInput] = useState({
         name: "",
         description: "",
         date: "",
-        rating: 0,
+        background_image:"",
+        rating: "",
         genres: [],
         platforms: []
     })
@@ -21,13 +44,24 @@ export default function VideogameCreate(){
         dispatch(getGenres())
     }, [])
 
+    // function handleDelete(el){
+    //     setInput({
+    //         ...input,
+    //         genres: input.genres.filter(gen => gen !== el)
+    //     })
+    // }
     function handleChange(e){
         setInput({
             ...input,
             [e.target.name]: e.target.value
         })
+        setErrors(validate({
+            ...input,
+            [e.target.name]: e.target.value
+        }));
     }
 
+    console.log(input)
     function handleCheck(e){
         if (e.target.checked){ //si el input esta check
             setInput({
@@ -42,7 +76,23 @@ export default function VideogameCreate(){
             genres: [...input.genres, e.target.value]
         })
     }
-    
+   
+    function handleSubmit(e){
+        e.preventDefault();
+        dispatch(postVideogame(input))
+        alert('Videojuego creado con exito')
+        setInput({
+            name: "",
+            description: "",
+            date: "",
+            background_image:"",
+            rating: "",
+            genres: [],
+            platforms: []
+        })
+        history.push('/home')
+    }
+  
     // console.log(input)
     return (
         <div>
@@ -50,7 +100,7 @@ export default function VideogameCreate(){
                 <button>Volver al menu principal</button>
             </Link>
                 <h1>Crea tu videojuego</h1>
-                <form>
+                <form onSubmit={(e) => handleSubmit(e)}>
                     <div>
                         <label>Nombre</label>
                         <input
@@ -59,6 +109,9 @@ export default function VideogameCreate(){
                             name = "name"
                             onChange={(e) => handleChange(e)}
                         />
+                        {errors.name && (
+                            <p className="error">{errors.name}</p>
+                        )}
                     </div>
                     <div>
                         <label>Descripcion</label>
@@ -67,9 +120,11 @@ export default function VideogameCreate(){
                             value= {input.description}
                             name = "description"
                             onChange={(e) => handleChange(e)}
-
+                            
                         />
-
+                         {errors.description && (
+                            <p className="error">{errors.description}</p>
+                        )}
                     </div>
                     <div>
                         <label>Fecha de lanzamiento</label>
@@ -80,6 +135,9 @@ export default function VideogameCreate(){
                             onChange={(e) => handleChange(e)}
 
                         />
+                          {errors.date && (
+                            <p className="error">{errors.date}</p>
+                        )}
                     </div>
                     <div>
                         <label>Rating</label>
@@ -92,6 +150,19 @@ export default function VideogameCreate(){
                             onChange={(e) => handleChange(e)}
 
                         />
+                          {errors.rating && (
+                            <p className="error">{errors.rating}</p>
+                        )}
+                    </div>
+                    <div>
+                        <label>Imagen</label>
+                        <input
+                        type= "text"
+                        value= {input.background_image}
+                        name= "background_image"
+                        onChange={(e) => handleChange(e)}
+                        
+                        />
                     </div>
                     <div>
                      <label>Generos</label>
@@ -101,9 +172,18 @@ export default function VideogameCreate(){
                         ))}
 
                         </select>
+                         {/* {input.genres.map(el => 
+                            <div>
+                                <p key={el}>{el}</p>
+                            <button onClick={() => handleDelete(el)}>X</button>
+                            </div>
+                        )}  */}
                     <ul>
                         <li>{input.genres.map(p => p + ' | ')}</li>
                     </ul>  
+                    {errors.genres && (
+                            <p className="error">{errors.genres}</p>
+                        )} 
                     </div>
                     <div>
                         <label>Plataformas</label>
@@ -145,6 +225,9 @@ export default function VideogameCreate(){
                                 <label htmlFor="PS Vita">PS Vita.</label>
                             </div>
                         </div>
+                        {errors.platforms && (
+                            <p className="error">{errors.platforms}</p>
+                        )}
                     </div>
                     <button type = 'submit'>Crear personaje</button>
                 </form>

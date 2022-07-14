@@ -24,8 +24,6 @@ function rootReducer(state= initialState, action){
             }
         case FILTER_BY_GENRE:
             const allVideogames = state.videogames
-            console.log('videogameeees', allVideogames)
-            // const genresFiltered = action.payload === 'All' ? allVideogames : allVideogames.filter(el => el.genres === action.payload)
             const genresFiltered = action.payload === ''? allVideogames: allVideogames.filter(videogame => videogame.genres.includes(action.payload))
             if (!genresFiltered.length ){
                 alert('No hay videojuegos de ese genero')
@@ -86,13 +84,16 @@ function rootReducer(state= initialState, action){
                     videogames: sortedRating
                 }
             case FILTER_CREATED:
-        
-                    const createdFilter = action.payload === 'Created'?
-                    state.copyVideogames.filter(el => el.createdInDb):
-                    state.copyVideogames.filter(el => !el.createdInDb)
+                const filtered = action.payload === 'Created' ? 
+                state.copyVideogames.filter((game)=> (typeof game.id) === 'string'):
+                state.copyVideogames.filter((game)=> (typeof game.id) === 'number')
+                
+                    // const createdFilter = action.payload === 'Created'?
+                    // state.copyVideogames.filter(el => el.createdInDb):
+                    // state.copyVideogames.filter(el => !el.createdInDb)
                     return {
                         ...state,
-                        videogames: action.payload === 'All' ? state.copyVideogames: createdFilter
+                        videogames: action.payload === 'All' ? state.copyVideogames: filtered
                     }
             case GET_DETAIL:
                     return{

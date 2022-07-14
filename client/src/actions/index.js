@@ -11,15 +11,20 @@ export const GET_NAME_VIDEOGAME = 'GET_NAME_VIDEOGAME';
 export const POST_VIDEOGAME = 'POST_VIDEOGAME';
 
 //AQUI SE CONECTA EL FROM CON EL BACK
-export function getVideogames(){
+
+export  function  getVideogames() {
     return async function (dispatch){
-        var json = await axios.get('http://localhost:3001/videogames');
-        return dispatch({
-            type: GET_VIDEOGAMES,
-            payload: json.data
+       await axios.get('http://localhost:3001/videogames')
+        .then((r) => {
+            return dispatch({ 
+                type: GET_VIDEOGAMES, 
+                payload: r.data 
+            });
         })
-        
-    }
+        .catch((error) => {
+            console.log(error);
+        });
+    };
 }
 
 export function filterVideogamesByGenre(payload){
@@ -50,33 +55,40 @@ export function filterCreated(payload){
     }
 }
 
-export function getGenres(){
+
+export  function  getGenres() {
     return async function (dispatch){
-        try{
-            var genres = await axios.get ('http://localhost:3001/genres')
-            return dispatch({
-                type: GET_GENRES,
-                payload: genres.data
-            })
-        }catch(error){
-            console.log(error)
-        }
-    }
+       await axios.get('http://localhost:3001/genres')
+        .then((r) => {
+            return dispatch({ 
+                type: GET_GENRES, 
+                payload: r.data 
+            });
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    };
 }
 
-export function getDetail(id){
-    return async function(dispatch){
-        try{
-            var json = await axios.get(`http://localhost:3001/videogame/${id}`)
-            return dispatch({
-                type: GET_DETAIL,
-                payload: json.data
-            })
-        }catch(error){
-            console.log(error)
-        }
-    }
-}
+
+
+export function getDetail(id) {
+    return async function(dispatch) {
+         await axios.get('http://localhost:3001/videogame/' +id) 
+         .then((r) => {
+             return dispatch({
+                    type: GET_DETAIL,
+                    payload: r.data,
+                 })
+         })
+         .catch((error) => {
+            console.log(error);
+         });
+    };
+};
+
+
 
 export function getNameVideogame(name){
     return async function(dispatch){

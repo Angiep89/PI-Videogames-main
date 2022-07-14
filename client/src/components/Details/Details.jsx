@@ -4,31 +4,42 @@ import { useDispatch, useSelector } from "react-redux";
 import { getDetail } from "../../actions";
 import { useEffect } from "react";
 
-export default function VideogameDetails(){
+export default function VideogameDetails(props){
     const dispatch = useDispatch();
-    const {id} = useParams();
-    const myVideogame = useSelector((state) => state.detail)
+   const id = props.match.params.id;
+   console.log('id', id)
+
+
+
+   const myVideogame = useSelector((state) => state.detail)
+
+
+   useEffect(()=> {
+       dispatch(getDetail(id))        
+    },[dispatch])
+    // console.log('detaail disp',useEffect())
+    
     console.log('videogame detaiil', myVideogame)
 
-    useEffect(()=> {
-        dispatch(getDetail(id))
-    },[dispatch, id])
-
+    const Detail = myVideogame
+    console.log('detale',Detail)
     return (
       <div>
-          {
-              myVideogame.length?
+          
               <div>
                   
-                  <h1> {myVideogame[0].name}</h1>
-                  <img src = {myVideogame[0].image} alt = 'image not found'/>
-                  
+                  <h1> {myVideogame.name}</h1>
+                  <img src = {myVideogame.background_image} alt = 'image not found' width= '200px' height= '250px'/>
+                  <h3>{myVideogame.genres?.map(g => g.name).join(' | ')}</h3>
+                  <h3>Descripcion: {myVideogame.description}</h3>
+                  <h3>Fecha de lanzamiento: {myVideogame.released}</h3>
+                  <h3>Rating: {myVideogame.rating}</h3>
+                  <h3>Plataformas: {myVideogame.platforms}</h3>
 
 
-              </div>:
-              <p>Loading......</p>
+              </div>
               
-          }
+          
 
           <Link to = '/home'>
               <button>Volver a la pagina principal</button>
@@ -39,50 +50,5 @@ export default function VideogameDetails(){
 
 
 
-    // return (<div>
 
-    //     {myVideogame.id==id?(<div className={s.gameDetail} style={style}>
-    //     <h1 className={s.title}>{game.name}</h1>
-    //     <div className={s.content}>
-    //       {myVideogame.description_raw ? myVideogame.description_raw : myVideogame.description}
-    //     </div>
-    //     <div className={s.rAndP}>
-    //       <span>
-    //         <h3>Genres</h3>
-    //         <ul>
-    //           {myVideogame.genres?.map((g, i) => {
-    //             return <li key={i}>{g.name}</li>;
-    //           })}
-    //         </ul>
-    //       </span>
-    //       <span>
-    //         <h3>Platforms</h3>
-    //         <ul>
-    //           {myVideogame.platforms?.map((p, i) => {
-    //             let name = p.platform ? p.platform.name : p.name;
-    //             return <li key={i}>{name}</li>;
-    //           })}
-    //         </ul>
-    //       </span>
-    //       <span>
-    //         <h3>Rating</h3>
-    //         <div>{myVideogame.rating}</div>
-    //         <div>
-    //           release date: {myVideogame.released}
-    //         </div>
-      
-    //       </span>
-    //     </div>
-      
-    //     <Link to={"/home"} style={{ textDecoration: "none" }}>
-    //       <button className='btn'>Go to Home</button>
-    //     </Link>
-    //     <div>
-    //       {game.name_original?game.name_original:null}
-    //     </div>
-    //   </div>):<h2>
-    //     Loading...
-    //   </h2>}
-    //   </div>
-    //   )
       }
