@@ -115,7 +115,10 @@ const detail = async (id)=>{
         include:
         {
             model:Genre,
-            attributes:["name"]
+            attributes:["name"],
+            through: {
+                attributes: []
+              }
         }
     })
     return juego

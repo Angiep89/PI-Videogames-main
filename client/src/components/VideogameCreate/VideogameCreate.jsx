@@ -8,14 +8,12 @@ function validate(input){
     let errors= {};
     if(!input.name){
         errors.name = 'Se requiere un nombre';
-    }else if(input.description){
-        errors.description = 'La descripcion debe ser completada'
     } else if (!input.rating || input.rating<0 || input.rating >5) {
         errors.rating = 'El rating debe ser un numero entre 0 y 5';
     }  else if (!input.released) {
         errors.released = 'Fecha de lanzamiento es requerida';
     }else if (!input.description) {
-        errors.description = 'Se require de una descripcion';
+        errors.description = 'Se requiere de una descripcion';
     }else if(input.genres.length< 1){
         errors.genres= 'Se debe seleccionar al menos un genero'
     }else if(input.platforms.length< 1){
@@ -33,7 +31,7 @@ export default function VideogameCreate(){
     const [input, setInput] = useState({
         name: "",
         description: "",
-        date: "",
+        released: "",
         background_image:"",
         rating: "",
         genres: [],
@@ -84,7 +82,7 @@ export default function VideogameCreate(){
         setInput({
             name: "",
             description: "",
-            date: "",
+            released: "",
             background_image:"",
             rating: "",
             genres: [],
@@ -130,8 +128,8 @@ export default function VideogameCreate(){
                         <label>Fecha de lanzamiento</label>
                         <input
                             type= "date"
-                            value= {input.date}
-                            name = "date"
+                            value= {input.released}
+                            name = "released"
                             onChange={(e) => handleChange(e)}
 
                         />
