@@ -23,6 +23,10 @@ module.exports = (sequelize) => {
     },
     rating: {
       type: DataTypes.FLOAT,
+      // validate:{
+      //   min: 0,
+      //   max: 5
+      // }
     },
     platforms: {
       type: DataTypes.STRING,

@@ -40,21 +40,41 @@ const datos = async ()=>{
     let juegosDB = await Videogame.findAll({
         include: {
           model: Genre,
+          attributes: ['name'],
+             through: {
+                attributes: []
+             }
         },
       })
       console.log('juegooos', juegosDB)
-    let juegosDBSimple= juegosDB.map(function(datos) {const info={
-        id: datos.id,
-        name: datos.name,
-        genres: datos.genres,
-        background_image: datos.background_image,
-        rating: datos.rating,
-        platforms:datos.platforms,
-        createdinDb: datos.createdinDb
-        // genrestr.toString()
-    } 
-    return info
-    })
+    // let juegosDBSimple= juegosDB.map(function(datos) {const info={
+    //     id: datos.id,
+    //     name: datos.name,
+    //     genres: datos.genres,
+    //     // genres: datos.Genre.map(g => g.name),
+    //     background_image: datos.background_image,
+    //     rating: datos.rating,
+    //     platforms:datos.platforms,
+    //     createdinDb: datos.createdinDb
+    //     // genrestr.toString()
+    // } 
+    // return info
+    // })
+
+        let juegosDBSimple= juegosDB.map((datos) => {
+            return {
+                id: datos.id,
+                name: datos.name,
+                // genres: datos.genres,
+                genres: datos.Genres.map(g => g.name),
+                background_image: datos.background_image,
+                rating: datos.rating,
+                platforms:datos.platforms,
+                createdinDb: datos.createdinDb
+                // genrestr.toString()
+            }
+        } 
+        )
     let allGames = [...juegosDBSimple, ...infoSimpleApi]
    
     return allGames;
@@ -74,12 +94,17 @@ const juegos = async (name)=>{
     let juegosDB = await Videogame.findAll({
         include: {
           model: Genre,
+          attributes: ['name'],
+             through: {
+                attributes: []
+             }
         },
       })
     let juegosDBSimple= juegosDB.map(function(datos) {const info={
         id: datos.id,
         name: datos.name,
-        genres: datos.genres,
+        genres: datos.Genres.map(g => g.name),
+        // genres: datos.genres,
         background_image: datos.background_image,
         rating: datos.rating,
         platforms:datos.platforms,
@@ -108,18 +133,19 @@ const detail = async (id)=>{
                 } 
         return infoSimpleApi
     }
-    const juego = await Videogame.findOne({
-        where:{
-            id:id
-        },
-        include:
+    const juego = await Videogame.findByPk(id, {
+    // const juego = await Videogame.findOne({
+        // where:{
+        //     id:id
+        // },
+        include:[
         {
             model:Genre,
             attributes:["name"],
             through: {
                 attributes: []
               }
-        }
+        }]
     })
     return juego
 }
@@ -185,9 +211,9 @@ router.get('/videogame/:id', async(req, res)=>{
         if(buscarDB){
             throw 'Juego en existencia'
         }
-        const generoGuardar= await Genre.findAll({where:{
-            name:genres,
-        }})
+        // const generoGuardar= await Genre.findAll({where:{
+        //     name:genres,
+        // }})
         const nuevoVideojuego= await Videogame.create({
             name, 
             description,    
@@ -197,7 +223,7 @@ router.get('/videogame/:id', async(req, res)=>{
             background_image,
             createdinDb
         })
-        nuevoVideojuego.addGenre(generoGuardar)
+        nuevoVideojuego.addGenres(genres)
         res.json(nuevoVideojuego)
     } 
     catch(e){
@@ -209,17 +235,45 @@ router.get('/videogame/:id', async(req, res)=>{
 
 
 //--------------------------------------get genres--------------------------------------------------------------
+// export const getGenres = async  () => {
+//     try{
+//         const allGenres = await Genre.findAll()
+//         if(!allGenres.length){
+            
+//             const genresAPI = await axios.get(`https://api.rawg.io/api/genres?key=${API_KEY}`)
+//             // genresAPI.data.results.forEach(p => {
+//             //     Genre.findOrCreate({
+//             //         where: { name: p.name }
+//             //     })
+//             // })
+//             // const genresDB = await Genre.findAll()
+//             const genresDB = await Genre.bulkCreate(genresAPI.data.results)
+//             res.json(genresDB)
+//     }
+//     }  catch(e){
+//         console.log(e)
+//     }
+// }
+
+
 router.get('/genres', async (req, res) => {
     //traer los generos de la api y guardarlos en la db
     try{
-        const genresAPI = await axios.get(`https://api.rawg.io/api/genres?key=${API_KEY}`)
-        genresAPI.data.results.forEach(p => {
-            Genre.findOrCreate({
-                where: { name: p.name }
-            })
-        })
-        const genresDB = await Genre.findAll()
-        res.json(genresDB)
+        const allGenres = await Genre.findAll()
+        if(!allGenres.length){
+            
+            const genresAPI = await axios.get(`https://api.rawg.io/api/genres?key=${API_KEY}`)
+            // genresAPI.data.results.forEach(p => {
+            //     Genre.findOrCreate({
+            //         where: { name: p.name }
+            //     })
+            // })
+            // const genresDB = await Genre.findAll()
+            const genresDB = await Genre.bulkCreate(genresAPI.data.results)
+            res.json(genresDB)
+        } 
+        res.json(allGenres)
+
     } catch (err) {
         res.status(404).json({ err })
     }

@@ -30,7 +30,7 @@ export default function VideogameDetails(props){
                   
                   <h1> {myVideogame.name}</h1>
                   <img src = {myVideogame.background_image} alt = 'image not found' width= '200px' height= '250px'/>
-                  <h3>{myVideogame.genres?.map(g => g.name).join(' | ')}</h3>
+                  {/* <h3>{myVideogame.genres?myVideogame.genres.map(g => g.name).join(' | '):myVideogame[0].Genres.map(g => g.name).join(' | ')}</h3> */}
                   <h3>Descripcion: {myVideogame.description}</h3>
                   <h3>Fecha de lanzamiento: {myVideogame.released}</h3>
                   <h3>Rating: {myVideogame.rating}</h3>
