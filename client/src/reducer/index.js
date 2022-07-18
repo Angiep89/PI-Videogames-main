@@ -3,8 +3,7 @@ const initialState = {
     videogames : [],
     genres: [],
     copyVideogames: [],
-    detail: [],
-    platforms: []
+    detail: []
 }
 
 function rootReducer(state= initialState, action){

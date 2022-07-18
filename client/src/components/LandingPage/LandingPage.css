@@ -1,0 +1,43 @@
+.landing{
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-image:url('../images/1147178.jpg');
+    background-position: center; 
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    overflow: hidden;
+    height: 100%; 
+    position:fixed  
+}
+
+h1 {
+    color: black;
+    flex-direction: column;
+    font-family: Lato, Arial, Helvetica, sans-serif;
+    font-size: 80px;
+    text-align: center;    
+    
+}
+.button {
+    background-color: transparent;
+    flex-direction: column;
+    color: black;
+    font-size: 25px;
+    font-family: Lato, Arial, Helvetica, sans-serif;
+    border-radius: 9999px;
+    border: #fff solid 3px;
+    padding: 25px;
+    cursor: pointer;
+    /* transition-duration: 0.4s;
+    margin-top: 1px;
+    margin-top: 40px;
+    margin-left: 45%; */
+}
+
+.button:hover {
+    background-color: #fff;
+    color: #220F00;
+    transition-delay: 0.2s;
+    transition: 0.8s;
+}

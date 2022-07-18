@@ -75,7 +75,7 @@ export  function  getGenres() {
 
 export function getDetail(id) {
     return async function(dispatch) {
-         await axios.get('http://localhost:3001/videogame/' +id) 
+         await axios.get('http://localhost:3001/videogame/'+id) 
          .then((r) => {
              return dispatch({
                     type: GET_DETAIL,

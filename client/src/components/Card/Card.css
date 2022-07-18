@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+.mainContainer {
+    display: flex;
+    flex-direction: column;
+    width: 18rem; 
+    height: 60vh;
+    align-items: center;
+    border-width: 0.2rem;
+    border-style: outset;
+    background-size:cover;
+    border-radius: 10px;
+    transition: transform .5s;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    margin-right: 2px;
+    margin-left: 2px;
+    background-color: #9ba3aa;
+    text-decoration: none;
+}
+
+.mainContainer:hover{
+    transform: scale(1.05);
+    background: #a945c7;
+    box-shadow: 0 0 10px #a945c7, 0 0 20px #a945c7, 0 0 40px #a945c7;
+    transition-delay: .1s;
+    color: beige;
+}
+
+.innerContainer{
+    display: flex;
+    flex-direction: column;
+    margin-top: .5px;
+    margin-bottom: .5px;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+}
+
+.innerContainer:hover{
+    color: beige;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: bolder;
+    align-items: center;
+    text-decoration: none;
+    color: rgb(37, 18, 72);
+
+}
+
+.title:hover{
+    color: beige;
+}
+
+.genres {
+    font-size: 16px;
+    text-decoration: none;
+    color: rgb(46, 70, 75);
+}
+
+.genres:hover{
+    color: beige;
+}
+
+.imagen {
+    width: 18rem;
+    height: 200;
+    border-radius: 10px;
+}

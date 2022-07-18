@@ -10,9 +10,9 @@ function App() {
     <div className="App">
       <Switch>
         <Route exact path = '/'  component={LandingPage}/>
-        <Route path = '/home' exact component={Home}/>
-        <Route path = '/videogames' exact component ={VideogameCreate} />
-        <Route  path= '/videogames/:id' exact component={Details}/>
+        <Route exact path = '/home'  component={Home}/>
+        <Route exact path = '/videogames'  component ={VideogameCreate} />
+        <Route  exact path= '/videogame/:id'  component={Details}/>
       </Switch>
 
     </div>

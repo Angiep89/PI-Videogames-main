@@ -4,9 +4,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import { getVideogames, filterVideogamesByGenre, orderByName, ratingSort, filterCreated, getGenres } from '../../actions';
 import {Link} from 'react-router-dom';
 import Card from '../Card/Card';
-import Paginado from '../Paginado';
+import Paginado from '../Paginado/Paginado';
 import SearchBar from '../SearchBar/SearchBar';
-
+import '../Home/Home.css'
 export default function Home(){
 const dispatch = useDispatch();
 const allVideogames = useSelector((state) => state.videogames)
@@ -27,11 +27,11 @@ const paginado = (pageNumber) => {
 
 useEffect(() => {
     dispatch(getVideogames())
-}, [dispatch])
+}, [])
 
 useEffect(() => {
     dispatch(getGenres())
-}, [dispatch])
+}, [])
 function handleClick(e){
     e.preventDefault();
     dispatch(getVideogames());
@@ -60,13 +60,16 @@ function handleFilterCreated(e){
 }
 
 return (
-    <div>
-        <Link to = '/videogames'>Crear videojuego</Link>
-        <h1>Crear</h1>
-        <button onClick={e => {handleClick(e)}}>
+    <div className='background'>
+        <div className='firstContainer'>
+            
+            <Link to = '/videogames'><button className='button'>Crear videojuego</button></Link>
+            <br/>
+            <button onClick={e => {handleClick(e)}}>
             Volver a cargar todos los videojuegos
-        </button>
-        <div>
+            </button>
+        </div>
+        <div className='secondContainer'>   
             <select onChange={(e) => handleSort(e)}>
                 <option value ='asc'>Ascendente</option>
                 <option value = 'desc'>Descendente</option>
@@ -89,15 +92,18 @@ return (
                 <option value = 'Created'>Base de datos</option>
                 <option value = 'API'>API</option>
             </select>
-    <Paginado
-         PostPage = {PostPage}
-         allVideogames = {allVideogames.length}
-         paginado = {paginado}
-    />
-
-    <SearchBar/>
+            <SearchBar/>
+        </div>
+        <div className='paginado'>
+            <Paginado
+                PostPage = {PostPage}
+                 allVideogames = {allVideogames.length}
+                paginado = {paginado}
+            />
+        </div>
+        <div className='eachVideogame'>
             {
-                 currentVideogames?.map (el => {
+                 currentVideogames.map (el => {
                     return (
                         <div >
                                 <Card 
@@ -114,6 +120,8 @@ return (
         </div>
       
     </div>
+
+   
 
 
 )

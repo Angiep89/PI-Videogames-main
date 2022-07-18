@@ -1,5 +1,5 @@
 import React from "react";
-
+import '../Paginado/Paginado.css'
 export default function Paginado ({PostPage, paginado, allVideogames }){
     const pageNumbers = []
 
@@ -9,7 +9,7 @@ export default function Paginado ({PostPage, paginado, allVideogames }){
 
     return (
         <nav>
-            <ul>
+            <ul className="barra">
                 {pageNumbers && 
                 pageNumbers.map(number => (
                     <li key={number} >
