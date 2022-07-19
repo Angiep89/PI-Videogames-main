@@ -1,33 +1,16 @@
 .error{
     color: red;
+    font-weight: normal;
 }
-
-.main-add {
-    display: flex;
-    justify-content: center;
-
-}
-
-.container-add {
-
-    text-align: center;
-    margin: 40px;
-    padding: 20px;
-    width: 800px;
-    height: 650px;
-}
-
-.container-add h2 {
-    
-    text-align: center;
-    font-family: 'Press Start 2P';
-    font-size: xx-large;
-    color:black
-}
-
-.div-cont {
-    display: flex;
-    justify-content: center;
+.avgwrapper {
+    margin:2% auto;
+    padding: 30px;
+    /* display: flex; */
+    border: 5px solid black;
+    width:650px;
+    border-radius: 40px;
+    background-color:transparent;
+    background-image: url('../images/the-legend-of-zelda-breath-of-the-wild_3840x2042_xtrafondos.com.jpg');
 }
 
 .genres-div {
@@ -37,7 +20,7 @@
     border: 1px solid black;
     width:650px;
     border-radius: 10px;
-    background-color: rgb(241, 154, 22);
+    background-color: rgb(95, 78, 103);
 }
 
 .plat-div {
@@ -47,49 +30,32 @@
     border: 1px solid black;
     width:650px;
     border-radius: 10px;
-    background-color: rgb(241, 154, 22);
+    background-color: rgb(119, 69, 108);
 }
 
-.container-add label {
-    font-size: large;
-    margin: 3px;
-}
+.input{
+    padding-top: 10px;
+    cursor: pointer;
+    text-align: center;
+    padding: 8px 24px;
+    border-radius: 8px;
+    width: 150px;
+    align-self:flex-end;
+} 
 
-.name{
-    height: 25px;
-    width: 400px;
-    border-radius: 30px;
+.main{
+    background-color:rgb(45, 45, 39);
+    color: whitesmoke;
+    padding-top: 10px;
+    cursor: pointer;
+    text-align: center;
+    padding: 8px 24px;
+    border-radius: 8px;
+    transition-duration: 0.4s;
+    width: 150px;
+    align-self:flex-end;
 }
-
-.dt {
-    height: 25px;
-    width: 120px;
-    border-radius: 30px;
-}
-
-.div-but-form {
-    display: flex;
-    justify-content: center;
-    margin-top: 15px;
-}
-
-.div-but-form button {
-    font-family: 'Press Start 2P';
-    padding: 10px;
-    margin: 20px;
-    border-radius: 20px;
-    background-color: chartreuse;
-}
-
-.div-but-form button:hover {
-    background-color: black;
-    color: #fff;
-}
-
-.container-add input {
-    background-color: rgb(241, 154, 22);
-}
-
-.container-add textarea {
-    background-color: rgb(241, 154, 22);
+.main:hover {
+    background-color:rgb(147, 147, 143);
+    color: black; 
 }

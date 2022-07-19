@@ -24,6 +24,8 @@ export default function VideogameCreate(){
             errors.rating = 'El rating debe ser un numero entre 0 y 5';
         }  else if (!input.released) {
             errors.released = 'Fecha de lanzamiento es requerida';
+        }else if (255<input.description){
+            errors.description = 'La descripcion debe ser menor a 255 caracteres'
         }else if (!input.description) {
             errors.description = 'Se requiere de una descripcion';
         }else if(input.genres.length < 1){
@@ -43,8 +45,8 @@ export default function VideogameCreate(){
         released: "",
         background_image:"",
         rating: "",
-        genres: [],
-        platforms: ""
+        platforms: "",
+        genres: []
     })
     console.log('input',input)
 
@@ -52,12 +54,7 @@ export default function VideogameCreate(){
         dispatch(getGenres())
     }, [dispatch])
 
-    function handleDelete(el){
-        setInput({
-            ...input,
-            genres: input.genres.filter(gen => gen !== el)
-        })
-    }
+  
     function handleChange(e){
         setInput({
             ...input,
@@ -103,19 +100,7 @@ export default function VideogameCreate(){
         }
     }
 
-    // function handleSelect(e){
-    //     setInput({
-    //         ...input,
-    //         genres: [...input.genres, e.target.value]
-    //     })
-    //     setErrors(
-    //         validate({
-    //             ...input,
-    //             genres,
-    //             [e.target.name]: e.target.value
-    //         })
-    //     )
-    // }
+   
    
     function handleSubmit(e){
         e.preventDefault();
@@ -128,8 +113,8 @@ export default function VideogameCreate(){
                 released: "",
                 background_image:"",
                 rating: "",
-                genres: [],
-                platforms: ""
+                platforms: "",
+                genres: []
             })
             history.push('/home')
 
@@ -137,12 +122,13 @@ export default function VideogameCreate(){
     }
 
     return (
-        <div className="main-add">
+        <div className="background">
+            <div className="avgwrapper">
             <Link to = '/home'>
-                <button>Volver al menu principal</button>
+                <button className = "main">Volver al menu principal</button>
             </Link>
-                <h1>Crea tu videojuego</h1>
-                <form onSubmit={(e) => handleSubmit(e)}>
+                <h2>Crea tu videojuego</h2>
+                <form className="formarea" onSubmit={(e) => handleSubmit(e)}>
                     <div>
                         <label>Nombre</label>
                         <input
@@ -186,6 +172,7 @@ export default function VideogameCreate(){
                         <input    
                            
                             type= "number"
+                            step="any"
                             value ={input.rating}
                             name = "rating"
                             min= "1"
@@ -209,84 +196,84 @@ export default function VideogameCreate(){
                     {errors.background_image && (
                             <p className="error">{errors.background_image}</p>
                         )}
-                    <label ><strong>Genres</strong></label>
+                    <label>Generos</label>
                         <div id='genres' className="genres-div">
-                        <div>
-                            <input name='Strategy' value='1' type="checkbox" id="Strategy" onChange={(e) => handleCheckGenres(e)} />
-                            <label htmlFor="Strategy">Strategy.</label>
-                        </div>
-                        <div>
-                        <input name='RPG' value='2' type="checkbox" id="RPG"  onChange={(e) => handleCheckGenres(e)}/>
-                        <label htmlFor="RPG">RPG.</label>
-                        </div>
-                        <div className="indie">
-                            <input name='Indie' value='3' type="checkbox" id="Indie" onChange={(e) => handleCheckGenres(e)} />
-                            <label htmlFor="Indie">Indie.</label>
-                        </div>
-                        <div className="Action">
-                        <input name='Action' value='4' type="checkbox" id="Action" onChange={(e) => handleCheckGenres(e)} />
-                        <label htmlFor="Action">Action.</label>
-                        </div>
-                        <div className="Adventure">
-                        <input name='Adventure' value='5' type="checkbox" id="Adventure"  onChange={(e) => handleCheckGenres(e)}/>
-                        <label htmlFor="Adventure">Adventure.</label>
-                        </div>
-                        <div>
-                            <input name='Shooter' value='6' type="checkbox" id="Shooter" onChange={(e) => handleCheckGenres(e)} />
-                            <label htmlFor="Shooter">Shooter.</label>
-                        </div>
-                        <div>
-                            <input name='Casual' value='7' type="checkbox" id="Casual" onChange={(e) => handleCheckGenres(e)} />
-                             <label htmlFor="Casual">Casual.</label>
-                        </div>
-                        <div>
-                            <input name='Simulation' value='8' type="checkbox" id="Simulation" onChange={(e) => handleCheckGenres(e)} />
-                             <label htmlFor="Simulation">Simulation.</label>
-                        </div>
-                        <div>
-                            <input name='Puzzle' value='9' type="checkbox" id="Puzzle" onChange={(e) => handleCheckGenres(e)} />
-                            <label htmlFor="Puzzle">Puzzle.</label>
-                        </div>
-                        <div>
-                            <input name='Arcade' value='10' type="checkbox" id="Arcade" onChange={(e) => handleCheckGenres(e)} />
-                            <label htmlFor="Arcade">Arcade.</label>
-                        </div>
-                        <div>
-                            <input name='Platformer' value='11' type="checkbox" id="Platformer" onChange={(e) => handleCheckGenres(e)} />
-                             <label htmlFor="Platformer">Platformer.</label>
-                        </div>
-                        <div>
-                            <input name='Racing' value='12' type="checkbox" id="Racing"  onChange={(e) => handleCheckGenres(e)}/>
-                            <label htmlFor="Racing">Racing.</label>
-                        </div>
-                        <div>
-                            <input name='Massively-Multiplayer' value='13' type="checkbox" id="Massively-Multiplayer" onChange={(e) => handleCheckGenres(e)} />
-                            <label htmlFor="Massively-Multiplayer">Massively-Multiplayer.</label>
-                        </div>
-                        <div>
-                            <input name='Sports' value='14' type="checkbox" id="Sports" onChange={(e) => handleCheckGenres(e)} />
-                            <label htmlFor="Sports">Sports.</label>
-                        </div>
-                        <div>
-                            <input name='Fighting' value='15' type="checkbox" id="Fighting"  onChange={(e) => handleCheckGenres(e)}/>
-                            <label htmlFor="Fighting">Fighting.</label>
-                        </div>
-                        <div>
-                            <input name='Family' value='16' type="checkbox" id="Family"  onChange={(e) => handleCheckGenres(e)}/>
-                            <label htmlFor="Family">Family.</label>
-                        </div>
-                        <div>
-                            <input name='Board Games' value='17' type="checkbox" id="Board Games"  onChange={(e) => handleCheckGenres(e)}/>
-                            <label htmlFor="Board">Board Games.</label>
-                        </div>
-                        <div>
-                            <input name='Educational' value='18' type="checkbox" id="Educational"  onChange={(e) => handleCheckGenres(e)}/>
-                            <label htmlFor="Educational">Educational.</label>
-                        </div>
-                        <div>
-                            <input name='Card' value='16' type="checkbox" id="Card"  onChange={(e) => handleCheckGenres(e)}/>
-                            <label htmlFor="Card">Card.</label>
-                        </div>
+                            <div>
+                                <input name='Strategy' value='1' type="checkbox" id="Strategy" onChange={(e) => handleCheckGenres(e)} />
+                                <label >Strategy.</label>
+                            </div>
+                            <div>
+                                <input name='RPG' value='2' type="checkbox" id="RPG"  onChange={(e) => handleCheckGenres(e)}/>
+                                <label>RPG.</label>
+                            </div>
+                            <div >
+                                <input name='Indie' value='3' type="checkbox" id="Indie" onChange={(e) => handleCheckGenres(e)} />
+                                <label >Indie.</label>
+                            </div>
+                            <div>
+                                <input name='Action' value='4' type="checkbox" id="Action" onChange={(e) => handleCheckGenres(e)} />
+                                <label >Action.</label>
+                            </div>
+                            <div >
+                                <input name='Adventure' value='5' type="checkbox" id="Adventure"  onChange={(e) => handleCheckGenres(e)}/>
+                                <label >Adventure.</label>
+                            </div>
+                            <div>
+                                <input name='Shooter' value='6' type="checkbox" id="Shooter" onChange={(e) => handleCheckGenres(e)} />
+                                <label >Shooter.</label>
+                            </div>
+                            <div>
+                                <input name='Casual' value='7' type="checkbox" id="Casual" onChange={(e) => handleCheckGenres(e)} />
+                                <label>Casual.</label>
+                            </div>
+                            <div>
+                                <input name='Simulation' value='8' type="checkbox" id="Simulation" onChange={(e) => handleCheckGenres(e)} />
+                                <label >Simulation.</label>
+                            </div>
+                            <div>
+                                <input name='Puzzle' value='9' type="checkbox" id="Puzzle" onChange={(e) => handleCheckGenres(e)} />
+                                <label>Puzzle.</label>
+                            </div>
+                            <div>
+                                <input name='Arcade' value='10' type="checkbox" id="Arcade" onChange={(e) => handleCheckGenres(e)} />
+                                <label>Arcade.</label>
+                            </div>
+                            <div>
+                                <input name='Platformer' value='11' type="checkbox" id="Platformer" onChange={(e) => handleCheckGenres(e)} />
+                                <label>Platformer.</label>
+                            </div>
+                            <div>
+                                <input name='Racing' value='12' type="checkbox" id="Racing"  onChange={(e) => handleCheckGenres(e)}/>
+                                <label>Racing.</label>
+                            </div>
+                            <div>
+                                <input name='Massively-Multiplayer' value='13' type="checkbox" id="Massively-Multiplayer" onChange={(e) => handleCheckGenres(e)} />
+                                <label>Massively-Multiplayer.</label>
+                            </div>
+                            <div>
+                                <input name='Sports' value='14' type="checkbox" id="Sports" onChange={(e) => handleCheckGenres(e)} />
+                                <label>Sports.</label>
+                            </div>
+                            <div>
+                                <input name='Fighting' value='15' type="checkbox" id="Fighting"  onChange={(e) => handleCheckGenres(e)}/>
+                                <label>Fighting.</label>
+                            </div>
+                            <div>
+                                <input name='Family' value='16' type="checkbox" id="Family"  onChange={(e) => handleCheckGenres(e)}/>
+                                <label>Family.</label>
+                            </div>
+                            <div>
+                                <input name='Board Games' value='17' type="checkbox" id="Board Games"  onChange={(e) => handleCheckGenres(e)}/>
+                                <label>Board Games.</label>
+                            </div>
+                            <div>
+                                <input name='Educational' value='18' type="checkbox" id="Educational"  onChange={(e) => handleCheckGenres(e)}/>
+                                <label>Educational.</label>
+                            </div>
+                            <div>
+                                <input name='Card' value='16' type="checkbox" id="Card"  onChange={(e) => handleCheckGenres(e)}/>
+                                <label >Card.</label>
+                            </div>
                         </div> 
                         {errors.genres && (
                                 <p className="error">{errors.genres}</p>
@@ -310,13 +297,11 @@ export default function VideogameCreate(){
                             </div>
                         )}  
                    
-                    </div>  */}
+                        </div>  */}
+                    
+
                     <div>
                         <label>Plataformas</label>
-
-                    </div>
-                    <div>
-                    <label className="title-name"><strong>Platforms: </strong> </label>
                         <div id='platforms' className="plat-div">
                             <div>
                                 <input name='PC' type="checkbox" value="PC" onChange={(e) => handleCheckPlatforms(e)} />
@@ -355,10 +340,11 @@ export default function VideogameCreate(){
                         {errors.platforms && (
                             <p className="error">{errors.platforms}</p>
                         )}
-                    <input type = 'submit'  disabled = {Object.keys(errors).length === 0?false:true}/>
+                    <br/>
+                    <input className= "input"type = 'submit'  disabled = {Object.keys(errors).length === 0?false:true}/>
                 </form>
            
-
+            </div>
         </div>
     )
 }

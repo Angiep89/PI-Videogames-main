@@ -26,17 +26,6 @@ const datos = async ()=>{
     const arr3= arr2.concat(arreglo4.data.results)
     const arr4= arr3.concat(arreglo5.data.results)
 
-    
-    // const infoSimpleApi = arr4.map(function(datos) {const info={
-    //     id: datos.id,
-    //     name: datos.name,
-    //     genres: datos.genres.map(genero=> genero.name),
-    //     background_image: datos.background_image,
-    //     rating: datos.rating,
-    //     platforms: datos.platforms?.map((el) => el.platform.name)
-    // } 
-    //     return info
-    // })
 
      const infoSimpleApi = arr4.map((datos) => {
         return {
@@ -71,7 +60,6 @@ const datos = async ()=>{
                 rating: datos.rating,
                 platforms:datos.platforms,
                 createdinDb: datos.createdinDb
-                // genrestr.toString()
             }
         } 
         )
@@ -225,39 +213,11 @@ router.get('/videogame/:id', async(req, res)=>{
 
 
 //--------------------------------------get genres--------------------------------------------------------------
-// export const getGenres = async  () => {
-//     try{
-//         const allGenres = await Genre.findAll()
-//         if(!allGenres.length){
-            
-//             const genresAPI = await axios.get(`https://api.rawg.io/api/genres?key=${API_KEY}`)
-//             // genresAPI.data.results.forEach(p => {
-//             //     Genre.findOrCreate({
-//             //         where: { name: p.name }
-//             //     })
-//             // })
-//             // const genresDB = await Genre.findAll()
-//             const genresDB = await Genre.bulkCreate(genresAPI.data.results)
-//             res.json(genresDB)
-//     }
-//     }  catch(e){
-//         console.log(e)
-//     }
-// }
 
 
 
 router.get('/genres', async (req, res) => {
-    //traer los generos de la api y guardarlos en la db
-    // try {    
-    //     const vgGenres = await Genre.findAll({
-    //      attributes: ['name']
-    //     })
-    //     let dbGenres = vgGenres.map(p => p.name)        
-    //     res.status(200).send(dbGenres);
-    //  } catch (error) {
-    //      res.send(`Error in route /genres ${error}`);
-    //  } 
+
     try{
         
             
